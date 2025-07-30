@@ -27,7 +27,7 @@ async function toLabels(csv: string): Promise<Uint8Array> {
       "Products:",
       row.products,
       " ",
-      "Seller:",
+      "Sender:",
       row.seller_name,
     ];
     if (row.notes !== " ") {
