@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "@std/csv": "jsr:@std/csv@^1.0.6",
+    "@std/http": "jsr:@std/http@^1.0.20",
+    "pdf-lib": "npm:pdf-lib@^1.17.1"
+  },
+  "tasks": {
+    "dev": "deno serve -A --watch main.ts"
+  },
+  "nodeModulesDir": "auto"
+}
