@@ -17,22 +17,17 @@ async function toLabels(csv: string): Promise<Uint8Array> {
     page.setFontSize(12);
     page.setLineHeight(72 * 0.25);
     const lines = [
-      "Recipient:",
       row.recipient_name,
+      row.address,
       row.recipient_phone,
       " ",
-      "Address:",
-      row.address,
+      `Sender: ${row.seller_name}`,
+      `Notes: ${row.notes}`,
       " ",
-      "Products:",
-      row.products,
-      " ",
-      "Sender:",
-      row.seller_name,
+      `Date: ${new Date().toLocaleDateString("en-AU")}`,
+      `Order: ${row.stop_number} of ${rows.length}`,
+      `Driver: ${row.driver}`,
     ];
-    if (row.notes !== " ") {
-      lines.push(" ", "Notes:", row.notes);
-    }
 
     page.drawText(
       lines.join("\n"),
