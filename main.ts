@@ -78,10 +78,11 @@ async function handler(request: Request): Promise<Response> {
 
   const includeProduct = formData.get("include-product") === "on";
   const labels = await toLabels(await file.text(), dateStr, includeProduct);
+  const filename = file.name.slice(0, -4) + ".pdf"; // Remove .csv extension
   return new Response(labels, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="labels.pdf"',
+      "Content-Disposition": `attachment; filename="${filename}"`,
     },
   });
 }
