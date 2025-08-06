@@ -78,7 +78,7 @@ async function handler(request: Request): Promise<Response> {
 
   const includeProduct = formData.get("include-product") === "on";
   const labels = await toLabels(await file.text(), dateStr, includeProduct);
-  const filename = file.name.slice(0, -4) + ".pdf"; // Remove .csv extension
+  const filename = file.name.slice(0, -4) + ".pdf"; // Replace `.csv` extension with `.pdf`
   return new Response(labels, {
     headers: {
       "Content-Type": "application/pdf",
