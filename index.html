@@ -3,34 +3,27 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IncaPost - Sydney deliveries made easy</title>
-    <meta
-      name="description"
-      content="Family-owned courier in Sydney, specialising in direct-to-customer deliveries. We offer real-time tracking, efficient routes, a seamless process, and service with a smile—loved by clients and customers alike."
-    >
-    <meta property="og:title" content="IncaPost">
-    <meta
-      property="og:description"
-      content="Family-owned courier in Sydney, specialising in direct-to-customer deliveries. We offer real-time tracking, efficient routes, a seamless process, and service with a smile—loved by clients and customers alike."
-    >
-    <meta property="og:image" content="https://incapost.com.au/logo.png">
-    <meta property="og:url" content="https://incapost.com.au">
+    <title>Labels for Circuit Generator by IncaPost</title>
   </head>
-  <body>
+  <body class="p-4">
     <h1>Labels for Circuit Generator</h1>
+    <p><a href="https://incapost.com.au">By IncaPost</a></p>
     <form method="POST" enctype="multipart/form-data">
       <label>
         CSV file
         <input id="file" type="file" name="file" accept="text/csv" required>
       </label>
+      <br>
       <label>
         Date
         <input type="date" name="date" required>
       </label>
+      <br>
       <label>
         Include product info
         <input type="checkbox" name="include-product">
       </label>
+      <br>
       <input type="reset" value="Reset">
       <button type="submit">Generate Labels</button>
     </form>
