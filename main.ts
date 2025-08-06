@@ -7,12 +7,14 @@ const PAGE_WIDTH = 4 * INCH_POINTS; // 4" in points
 const PAGE_HEIGHT = 6 * INCH_POINTS; // 6" in points
 const TOP_MARGIN = 0.5 * INCH_POINTS; // 0.5" margin from the top
 
-async function toLabels(
-  csv: string,
-  dateStr: string,
-  includeProduct: boolean,
-): Promise<Uint8Array> {
-  const rows = parse(csv, { skipFirstRow: true });
+interface ToLabelsConfig {
+  csv: string;
+  dateStr: string;
+  includeProduct: boolean;
+}
+
+async function toLabels(config: ToLabelsConfig): Promise<Uint8Array> {
+  const rows = parse(config.csv, { skipFirstRow: true });
   const pdfDoc = await PDFDocument.create();
   const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
   const groupedRows = Object.groupBy(rows, (row) => row.driver);
@@ -30,10 +32,10 @@ async function toLabels(
       `Sender: ${row.seller_name}`,
       `Notes: ${row.notes}`,
       " ",
-      `Date: ${dateStr}`,
+      `Date: ${config.dateStr}`,
       `Order: ${row.stop_number} of ${totalStops}`,
       `Driver: ${row.driver}`,
-      includeProduct ? `Product: ${row.products}` : "",
+      config.includeProduct ? `Product: ${row.products}` : "",
     ];
 
     page.drawText(
@@ -74,15 +76,18 @@ async function handler(request: Request): Promise<Response> {
   if (typeof date !== "string" || !date) {
     return new Response("Bad Request", { status: 400 });
   }
-  const dateStr = new Date(date || Date.now()).toLocaleDateString("en-AU");
 
-  const includeProduct = formData.get("include-product") === "on";
-  const labels = await toLabels(await file.text(), dateStr, includeProduct);
-  const filename = file.name.slice(0, -4) + ".pdf"; // Replace `.csv` extension with `.pdf`
-  return new Response(labels, {
+  const labelsPdf = await toLabels({
+    csv: await file.text(),
+    dateStr: new Date(date || Date.now()).toLocaleDateString("en-AU"),
+    includeProduct: formData.get("include-product") === "on",
+  });
+  return new Response(labelsPdf, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `attachment; filename="${
+        file.name.slice(0, -4)
+      }.pdf"`,
     },
   });
 }
