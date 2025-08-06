@@ -7,15 +7,21 @@ const PAGE_WIDTH = 4 * INCH_POINTS; // 4" in points
 const PAGE_HEIGHT = 6 * INCH_POINTS; // 6" in points
 const TOP_MARGIN = 0.5 * INCH_POINTS; // 0.5" margin from the top
 
-async function toLabels(csv: string): Promise<Uint8Array> {
+async function toLabels(
+  csv: string,
+  dateStr: string,
+  includeProduct: boolean,
+): Promise<Uint8Array> {
   const rows = parse(csv, { skipFirstRow: true });
   const pdfDoc = await PDFDocument.create();
   const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
+  const groupedRows = Object.groupBy(rows, (row) => row.driver);
 
   for (const row of rows) {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
     page.setFontSize(12);
     page.setLineHeight(72 * 0.25);
+    const totalStops = groupedRows[row.driver]?.length || 0;
     const lines = [
       row.recipient_name,
       row.address,
@@ -24,9 +30,10 @@ async function toLabels(csv: string): Promise<Uint8Array> {
       `Sender: ${row.seller_name}`,
       `Notes: ${row.notes}`,
       " ",
-      `Date: ${new Date().toLocaleDateString("en-AU")}`,
-      `Order: ${row.stop_number} of ${rows.length}`,
+      `Date: ${dateStr}`,
+      `Order: ${row.stop_number} of ${totalStops}`,
       `Driver: ${row.driver}`,
+      includeProduct ? `Product: ${row.products}` : "",
     ];
 
     page.drawText(
@@ -62,8 +69,15 @@ async function handler(request: Request): Promise<Response> {
   if (!(file instanceof File)) {
     return new Response("Bad Request", { status: 400 });
   }
-  const labels = await toLabels(await file.text());
 
+  const date = formData.get("date");
+  if (typeof date !== "string" || !date) {
+    return new Response("Bad Request", { status: 400 });
+  }
+  const dateStr = new Date(date || Date.now()).toLocaleDateString("en-AU");
+
+  const includeProduct = formData.get("include-product") === "on";
+  const labels = await toLabels(await file.text(), dateStr, includeProduct);
   return new Response(labels, {
     headers: {
       "Content-Type": "application/pdf",

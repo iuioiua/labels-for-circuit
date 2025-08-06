@@ -15,67 +15,23 @@
     >
     <meta property="og:image" content="https://incapost.com.au/logo.png">
     <meta property="og:url" content="https://incapost.com.au">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body>
-    <nav class="px-4 py-10 max-w-3xl mx-auto">
-      <a href="/">
-        <img
-          src="/static/logo-horizontal.svg"
-          alt="IncaPost"
-          class="h-10 w-auto"
-        >
-      </a>
-    </nav>
-    <article class="prose px-4 py-10 max-w-3xl mx-auto">
-      <h1 id="#labels-for-circuit">Labels for Circuit</h1>
-      <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <button type="submit" class="btn btn-primary mt-4">
-          Generate Labels
-        </button>
-      </form>
-    </article>
-    <footer class="bg-white">
-      <div
-        class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8"
-      >
-        <nav
-          aria-label="Footer"
-          class="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-sm/6"
-        >
-          <a href="/book" class="text-gray-600 hover:text-gray-900">Book</a>
-          <a href="/onboard" class="text-gray-600 hover:text-gray-900"
-          >Onboard</a>
-          <a href="/review" class="text-gray-600 hover:text-gray-900">Review</a>
-        </nav>
-        <div class="mt-16 flex justify-center gap-x-10">
-          <a
-            href="https://www.facebook.com/IncaPost/"
-            class="text-gray-600 hover:text-gray-800"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="sr-only">Facebook</span>
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-              class="size-6"
-            >
-              <path
-                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
-        <p class="mt-10 text-center text-sm/6 text-gray-600">
-          &copy; 2025 IncaPost
-        </p>
-      </div>
-    </footer>
+    <form method="POST" enctype="multipart/form-data">
+      <label>
+        CSV file
+        <input id="file" type="file" name="file" accept="text/csv">
+      </label>
+      <label>
+        Date
+        <input type="date" name="date">
+      </label>
+      <label>
+        Include product info
+        <input type="checkbox" name="include-product">
+      </label>
+      <input type="reset" value="Reset">
+      <button type="submit">Generate Labels</button>
+    </form>
   </body>
 </html>
