@@ -42,33 +42,37 @@ async function handler(request: Request): Promise<Response> {
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Courier);
   for (const stop of stops) {
-    const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-    page.setFontSize(12);
-    page.setLineHeight(72 * 0.25);
-    const totalStops = stopsByDriver[stop.driver]?.length || 0;
-    const lines = [
-      stop.recipient_name,
-      stop.address,
-      stop.recipient_phone,
-      " ",
-      `Sender: ${stop.seller_name}`,
-      `Notes: ${stop.notes}`,
-      " ",
-      `Date: ${dateStr}`,
-      `Order: ${stop.stop_number} of ${totalStops}`,
-      `Driver: ${stop.driver}`,
-      includeProduct ? `Product: ${stop.products}` : "",
-    ];
+    const packageCount = stop.package_count ? Number(stop.package_count) : 1;
+    for (let packageNum = 1; packageNum <= packageCount; packageNum++) {
+      const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+      page.setFontSize(12);
+      page.setLineHeight(72 * 0.25);
+      const totalStops = stopsByDriver[stop.driver]?.length || 0;
+      const lines = [
+        stop.recipient_name,
+        stop.address,
+        stop.recipient_phone,
+        " ",
+        `Sender: ${stop.seller_name}`,
+        `Notes: ${stop.notes}`,
+        " ",
+        `Date: ${dateStr}`,
+        `Stop ${stop.stop_number} of ${totalStops}`,
+        `Package ${packageNum} of ${packageCount}`,
+        `Driver: ${stop.driver}`,
+        includeProduct ? `Product: ${stop.products}` : "",
+      ];
 
-    page.drawText(
-      lines.join("\n"),
-      {
-        font,
-        x: LEFT_MARGIN,
-        y: PAGE_HEIGHT - 0.5 * INCHES_IN_PTS,
-        maxWidth: PAGE_WIDTH - LEFT_MARGIN * 2,
-      },
-    );
+      page.drawText(
+        lines.join("\n"),
+        {
+          font,
+          x: LEFT_MARGIN,
+          y: PAGE_HEIGHT - 0.5 * INCHES_IN_PTS,
+          maxWidth: PAGE_WIDTH - LEFT_MARGIN * 2,
+        },
+      );
+    }
   }
   const labelsPdf = await pdfDoc.save();
 
